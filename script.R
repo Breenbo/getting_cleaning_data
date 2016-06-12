@@ -41,7 +41,8 @@ names(subject_train) <- "subject"
 # switching number with names of label in y_test variables
 y_test <- read.table("UCI HAR Dataset/test/y_test.txt", 
                      stringsAsFactors = FALSE)
-y_test <- as.data.frame(apply(y_test, 2, function(i) activity_labels[i,2]))
+y_test <- as.data.frame(apply(y_test, 2, function(i) activity_labels[i,2]), 
+                        stringsAsFactors = FALSE)
 names(y_test) <- "activity"
 # reading subject number and title
 subject_test <- read.table("UCI HAR Dataset/test/subject_test.txt", 
@@ -55,7 +56,19 @@ resultTest <- read.table("UCI HAR Dataset/test/X_test.txt",
                          col.names = feature[,2], stringsAsFactors = FALSE)
 #--------------------------------------------------------------------------
 # concacenate all values
-#--------------------------------------------------------------------------
 resultTrain <- cbind(y_train, subject_train, resultTrain)
 resultTest <- cbind(y_test, subject_test, resultTest)
-result <- rbind(resultTest, resultTrain)
+result <- rbind.data.frame(resultTest, resultTrain, stringsAsFactors = FALSE)
+#---------------------------------------------------------------------------
+# extracting only the measurements on the mean and standard deviation for each 
+# measurement
+# searching names of mean and std
+noms <- names(result)
+noms_mean_std <- noms[grepl("activity|subject|mean|std",noms)]
+#---------------------------------------------------------
+result_mean_std <- select(result, one_of(noms_mean_std))
+#---------------------------------------------------------
+# create a second, independent tidy data set with the average of each variable 
+# for each activity and each subject.
+# UTILISER GROUP_BY et ????
+
