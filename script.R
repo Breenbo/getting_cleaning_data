@@ -22,52 +22,88 @@ library(dplyr)
 # décompresser le zip UCI
 # ne pas changer les noms UCI
 # setwd dans le dossier contenant le script et UCI
+# si le script dans le même dossier que UCI, juste mean_std()
+# si le script dans répertoire différent, mean_std(UCI_dir_path)
 #----------------------------------------------------------------------------
-# read and save names in variable "feature"
-feature <- read.table("UCI HAR Dataset/features.txt", stringsAsFactors = FALSE)
-activity_labels <- read.table("UCI HAR Dataset/activity_labels.txt", 
-                              stringsAsFactors = FALSE)
+# function to retrieve text files
+retrieve_path <- function(path) {
+        dir_feature <- paste(path, "features.txt", sep = "/")
+        dir_activity_label <- paste(path, "activity_labels.txt", sep = "/")
+        x <- c("train", "test")
+        dir_app <- lapply(x, function(x) {
+                dir_y <- paste(path,"/", x,"/", "y_",x,".txt", sep="")
+                dir_subject <- paste(path,"/", x,"/", "subject_",x,".txt", 
+                                     sep="")
+                dir_result <- paste(path,"/", x,"/", "X_",x,".txt", sep="")
+                dir_app <- c(subject = dir_subject, y = dir_y, 
+                             result = dir_result)
+        })
+        dir_path <- c(activity = dir_activity_label,feature = dir_feature, 
+                      train = dir_app[1], test = dir_app[2])
+        return(dir_path)
+}
+# FONCTION POUR TRAVAILLER SUR TEST ET SUR TRAIN
+#
+cleaning <- function(path, theme) {
+        #-----------------------------------------------------------------------
+        # read and save names in variable "feature"
+        feature <- read.table(retrieve_path(path)$feature, 
+                              stringsAsFactors = FALSE, header = FALSE)
+        activity_labels <- read.table(retrieve_path(path)$activity, 
+                                      stringsAsFactors = FALSE, header = FALSE)
+        #---------------------------------------------------------------------------
+        # reading, setting names of columns and saving result datas
+        result_theme <- read.table(retrieve_path(path)[[theme]][["result"]], 
+                                  col.names = feature[,2], 
+                                  stringsAsFactors = FALSE,
+                                  header = FALSE)
+        #-----------------------------------------------------------------------
+        # switching number with names of label in y_train variables
+        y_theme <- read.table(retrieve_path(path)[[theme]][["y"]], 
+                              stringsAsFactors = FALSE, header = FALSE)
+        y_theme <- as.data.frame(apply(y_theme, 2, 
+                                       function(i) activity_labels[i,2]))
+        names(y_theme) <- "activity"
+        # reading subject number and title
+        subject_theme <- read.table(retrieve_path(path)[[theme]][["subject"]], 
+                                    stringsAsFactors = FALSE, header = FALSE)
+        names(subject_theme) <- "subject"
+        if (theme == "train") {
+                y_train <- y_theme
+                subject_train <- subject_theme
+                result_train <- result_theme
+                resultTrain <- cbind(y_train, subject_train, result_train)
+                return(resultTrain)
+        }
+        if (theme == "test") {
+                y_test <- y_theme
+                subject_test <- subject_theme
+                result_test <- result_theme
+                resultTest <- cbind(y_test, subject_test, result_test)
+                return(resultTest)
+        }
+}
 #----------------------------------------------------------------------------
-# switching number with names of label in y_train variables
-y_train <- read.table("UCI HAR Dataset/train/y_train.txt", 
-                      stringsAsFactors = FALSE)
-y_train <- as.data.frame(apply(y_train, 2, function(i) activity_labels[i,2]))
-names(y_train) <- "activity"
-# reading subject number and title
-subject_train <- read.table("UCI HAR Dataset/train/subject_train.txt", 
-                            stringsAsFactors = FALSE)
-names(subject_train) <- "subject"
+# mean function
 #----------------------------------------------------------------------------
-# switching number with names of label in y_test variables
-y_test <- read.table("UCI HAR Dataset/test/y_test.txt", 
-                     stringsAsFactors = FALSE)
-y_test <- as.data.frame(apply(y_test, 2, function(i) activity_labels[i,2]), 
-                        stringsAsFactors = FALSE)
-names(y_test) <- "activity"
-# reading subject number and title
-subject_test <- read.table("UCI HAR Dataset/test/subject_test.txt", 
-                           stringsAsFactors = FALSE)
-names(subject_test) <- "subject"
-#---------------------------------------------------------------------------
-# reading, setting names of columns and saving result datas
-resultTrain <- read.table("UCI HAR Dataset/train/X_train.txt", 
-                          col.names = feature[,2], stringsAsFactors = FALSE)
-resultTest <- read.table("UCI HAR Dataset/test/X_test.txt",
-                         col.names = feature[,2], stringsAsFactors = FALSE)
-#--------------------------------------------------------------------------
-# concacenate all values
-resultTrain <- cbind(y_train, subject_train, resultTrain)
-resultTest <- cbind(y_test, subject_test, resultTest)
-result <- rbind.data.frame(resultTest, resultTrain, stringsAsFactors = FALSE)
-#---------------------------------------------------------------------------
-# extracting only the measurements on the mean and standard deviation for each 
-# measurement
-# searching names of mean and std
-noms <- names(result)
-noms_mean_std <- noms[grepl("activity|subject|mean|std",noms)]
-#---------------------------------------------------------
-result_mean_std <- select(result, one_of(noms_mean_std))
-#---------------------------------------------------------
+mean_std <- function(UCI_dir_path = "UCI HAR Dataset") {
+        # retrieving the interesting txt files
+        retrieve_path(UCI_dir_path)
+        # concacenate all values of function cleaning
+        result <- rbind.data.frame(cleaning(UCI_dir_path,"test"), 
+                                   cleaning(UCI_dir_path, "train"), 
+                                   stringsAsFactors = FALSE)
+        # extracting only the measurements on the mean and standard deviation for each 
+        # measurement
+        # searching names of mean and std
+        noms <- names(result)
+        noms_mean_std <- noms[grepl("activity|subject|mean|std",noms)]
+        #---------------------------------------------------------
+        result_mean_std <- select(result, one_of(noms_mean_std))
+        #---------------------------------------------------------
+        return(c(dim(result_mean_std), names(result_mean_std)))
+}
+
 # create a second, independent tidy data set with the average of each variable 
 # for each activity and each subject.
 # UTILISER GROUP_BY et ????
