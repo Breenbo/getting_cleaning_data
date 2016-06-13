@@ -7,7 +7,7 @@
 #    with the average of each variable for each activity and each subject.
 
 # memento of files
-# train/x_train : result per lines - 7352 obs / 561 variables (worked raw variables)
+# train/X_train : result per lines - 7352 obs / 561 variables (worked raw variables)
 # train/y_train : activities per lines, from 1 to 6 - 7352 obs / 1 column
 # train/subject_train : subject per lines, from 1 to 30 - 7352 obs / 1 column
 # activity_labels : as title, 6 obs / 2 columns (nb / name)
@@ -47,7 +47,8 @@ cleaning <- function(path, theme) {
         #-----------------------------------------------------------------------
         # read and save names in variable "feature"
         feature <- read.table(retrieve_path(path)$feature, 
-                              stringsAsFactors = FALSE, header = FALSE)
+                              stringsAsFactors = FALSE, header = FALSE,
+                              colClasses = "character")
         activity_labels <- read.table(retrieve_path(path)$activity, 
                                       stringsAsFactors = FALSE, header = FALSE)
         #---------------------------------------------------------------------------
@@ -55,17 +56,20 @@ cleaning <- function(path, theme) {
         result_theme <- read.table(retrieve_path(path)[[theme]][["result"]], 
                                   col.names = feature[,2], 
                                   stringsAsFactors = FALSE,
-                                  header = FALSE)
+                                  header = FALSE,
+                                  colClasses = "numeric") #improve read.table
         #-----------------------------------------------------------------------
         # switching number with names of label in y_train variables
         y_theme <- read.table(retrieve_path(path)[[theme]][["y"]], 
-                              stringsAsFactors = FALSE, header = FALSE)
+                              stringsAsFactors = FALSE, header = FALSE, 
+                              colClasses = "numeric")
         y_theme <- as.data.frame(apply(y_theme, 2, 
                                        function(i) activity_labels[i,2]))
         names(y_theme) <- "activity"
         # reading subject number and title
         subject_theme <- read.table(retrieve_path(path)[[theme]][["subject"]], 
-                                    stringsAsFactors = FALSE, header = FALSE)
+                                    stringsAsFactors = FALSE, header = FALSE,
+                                    colClasses = "numeric")
         names(subject_theme) <- "subject"
         if (theme == "train") {
                 y_train <- y_theme
@@ -100,11 +104,13 @@ mean_std <- function(UCI_dir_path = "UCI HAR Dataset") {
 }
 #----------------------------------------------------------------------------
 # function to mean all the values for each activity and each subject
+# write results in dataset .csv
 #----------------------------------------------------------------------------
 average_data <- function(UCI_dir_path = "UCI HAR Dataset") {
         average_dataset <- mean_std(UCI_dir_path)
         average_dataset <- group_by(average_dataset, activity, subject)
         average_dataset <- summarise_each(average_dataset, funs(mean))
-        return(average_dataset)
+        write.csv(average_dataset, file = "average_dataset.csv", 
+                  col.names = TRUE, row.names = TRUE)
 }
 
