@@ -15,17 +15,15 @@
 #       mean() : mean value
 #       std() : standard deviation
 
-# data frame -> working with dplyr
+# data frame -> working with dplyr !!!
 library(dplyr)
 #---------------------------------------------------------
-# PLACER SCRIPT et dossier UCI HAR Dataset dans un dossier
 # décompresser le zip UCI
-# ne pas changer les noms UCI
-# setwd dans le dossier contenant le script et UCI
 # si le script dans le même dossier que UCI, juste mean_std()
 # si le script dans répertoire différent, mean_std(UCI_dir_path)
 #----------------------------------------------------------------------------
 # function to retrieve text files
+#----------------------------------------------------------------------------
 retrieve_path <- function(path) {
         dir_feature <- paste(path, "features.txt", sep = "/")
         dir_activity_label <- paste(path, "activity_labels.txt", sep = "/")
@@ -42,8 +40,9 @@ retrieve_path <- function(path) {
                       train = dir_app[1], test = dir_app[2])
         return(dir_path)
 }
-# FONCTION POUR TRAVAILLER SUR TEST ET SUR TRAIN
-#
+#----------------------------------------------------------------------------
+# cleaning and merging the datasets, and labelling them, for train and test
+#----------------------------------------------------------------------------
 cleaning <- function(path, theme) {
         #-----------------------------------------------------------------------
         # read and save names in variable "feature"
@@ -84,27 +83,28 @@ cleaning <- function(path, theme) {
         }
 }
 #----------------------------------------------------------------------------
-# mean function
+# merging datasets to have tidy one, then extract only mean and std columns
 #----------------------------------------------------------------------------
 mean_std <- function(UCI_dir_path = "UCI HAR Dataset") {
-        # retrieving the interesting txt files
-        retrieve_path(UCI_dir_path)
-        # concacenate all values of function cleaning
+        # merge all values in one tidy dataset
         result <- rbind.data.frame(cleaning(UCI_dir_path,"test"), 
                                    cleaning(UCI_dir_path, "train"), 
                                    stringsAsFactors = FALSE)
-        # extracting only the measurements on the mean and standard deviation for each 
-        # measurement
         # searching names of mean and std
         noms <- names(result)
         noms_mean_std <- noms[grepl("activity|subject|mean|std",noms)]
-        #---------------------------------------------------------
+        # extracting only the measurements on the mean and standard deviation 
+        # for each measurement
         result_mean_std <- select(result, one_of(noms_mean_std))
-        #---------------------------------------------------------
-        return(c(dim(result_mean_std), names(result_mean_std)))
+        return(result_mean_std)
 }
-
-# create a second, independent tidy data set with the average of each variable 
-# for each activity and each subject.
-# UTILISER GROUP_BY et ????
+#----------------------------------------------------------------------------
+# function to mean all the values for each activity and each subject
+#----------------------------------------------------------------------------
+average_data <- function(UCI_dir_path = "UCI HAR Dataset") {
+        average_dataset <- mean_std(UCI_dir_path)
+        average_dataset <- group_by(average_dataset, activity, subject)
+        average_dataset <- summarise_each(average_dataset, funs(mean))
+        return(average_dataset)
+}
 
