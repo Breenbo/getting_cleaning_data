@@ -42,27 +42,36 @@ retrieve_path <- function(path) {
 cleaning <- function(path, theme) {
         #-----------------------------------------------------------------------
         # read and save names in variable "feature"
+        #----------------------------------------------------------------------
         feature <- read.table(retrieve_path(path)$feature,
                               stringsAsFactors = FALSE, header = FALSE,
                               colClasses = "character")
         activity_labels <- read.table(retrieve_path(path)$activity,
                                       stringsAsFactors = FALSE, header = FALSE)
-        #---------------------------------------------------------------------------
+        #-----------------------------------------------------------------------
         # reading, setting names of columns and saving result datas
+        #----------------------------------------------------------------------
         result_theme <- read.table(retrieve_path(path)[[theme]][["result"]],
                                   col.names = feature[,2],
                                   stringsAsFactors = FALSE,
                                   header = FALSE,
                                   colClasses = "numeric") #improve read.table
+        names(result_theme) <- gsub("\\.", "", names(result_theme))
+        names(result_theme) <- gsub("[Mm]ean", "MEAN", names(result_theme))
+        names(result_theme) <- gsub("std", "STD", names(result_theme))
+        return(result_theme)
         #-----------------------------------------------------------------------
         # switching number with names of label in y_train variables
+        #----------------------------------------------------------------------
         y_theme <- read.table(retrieve_path(path)[[theme]][["y"]],
                               stringsAsFactors = FALSE, header = FALSE,
                               colClasses = "numeric")
         y_theme <- as.data.frame(apply(y_theme, 2,
                                        function(i) activity_labels[i,2]))
         names(y_theme) <- "activity"
+        #-----------------------------------------------------------------------
         # reading subject number and title
+        #-----------------------------------------------------------------------
         subject_theme <- read.table(retrieve_path(path)[[theme]][["subject"]],
                                     stringsAsFactors = FALSE, header = FALSE,
                                     colClasses = "numeric")
@@ -92,7 +101,7 @@ mean_std <- function(UCI_dir_path = "UCI HAR Dataset") {
                                    stringsAsFactors = FALSE)
         # searching names of mean and std
         noms <- names(result)
-        noms_mean_std <- noms[grepl("activity|subject|mean|std",noms)]
+        noms_mean_std <- noms[grepl("activity|subject|MEAN|STD",noms)]
         # extracting only the measurements on the mean and standard deviation
         # for each measurement
         result_mean_std <- select(result, one_of(noms_mean_std))
