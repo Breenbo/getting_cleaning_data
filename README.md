@@ -11,10 +11,13 @@
 
 ## Functions explanation
 The script contains four functions(arguments) :
-- *retrieve_path(path)* :
+- *retrieve_path(UCI_dir_path)* :
   - reconstruct the path to files from the directory path of "UCI HAR Dataset" entered by user.
   - Work only if the files names aren't changed !
-- *cleaning(path, theme)* : clean the files "train" and "test" and add columns names, rows with subjects and activities
+- *cleaning(UCI_dir_path, theme)* :
+  - clean the files "train" and "test" and add columns names, rows with subjects and activities
+  - theme can be "test" or "train"
+  - return one clean dataset for train values and one dataset for test values
 - *mean_std(UCI_dir_path)* :
   - extract only the measurements on the mean and standard deviation for each measurements,
   - take the files returned by the *cleaning* function and merge them in a unique dataset.
