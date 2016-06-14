@@ -1,8 +1,6 @@
-getting_cleaning_data
-=====================
+# getting_cleaning_data
 
-How to make it work
--------------------
+## How to make it work
 - Unzip the UCI HAR Dataset.zip wherever you want
 - DON'T rename the files or the directories
 - if the script is in the same directory than the UCI HAR Dataset directory, you don't have to write the path of the UCI HAR Dataset
@@ -10,8 +8,7 @@ How to make it work
 - to create a file.csv with the average of each mean and standard deviation for each activities and each subjects, call the *average_data* function with the path to the UCI HAR Dataset, including "UCI HAR Dataset"
 
 
-Functions explanation
----------------------
+## Functions explanation
 The script contains four functions(arguments) :
 - *retrieve_path(path)* : reconstruct the path to files from the directory path of UCI data path entered by user
   ! Works only if the files names aren't changed !
