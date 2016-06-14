@@ -11,9 +11,14 @@
 
 ## Functions explanation
 The script contains four functions(arguments) :
-- *retrieve_path(path)* : reconstruct the path to files from the directory path of "UCI HAR Dataset" entered by user.
-  Works only if the files names aren't changed !
-- *cleaning(path, theme)* : clean the files "train" and "test" and add columns names, rows with subjects and activities, then merge  the datasets
-- *mean_std(UCI_dir_path)* : extracting only the measurements on the mean and standard deviation for each measurements
-- *average_data(UCI_dir_path)* : create a file.csv with the average of each mean and standard deviation for each activities and each subjects
+- *retrieve_path(path)* :
+  - reconstruct the path to files from the directory path of "UCI HAR Dataset" entered by user.
+  - Work only if the files names aren't changed !
+- *cleaning(path, theme)* : clean the files "train" and "test" and add columns names, rows with subjects and activities
+- *mean_std(UCI_dir_path)* :
+  - extract only the measurements on the mean and standard deviation for each measurements,
+  - take the files returned by the cleaning function and merge them in a unique dataset.
+- *average_data(UCI_dir_path)* :
+  - create a file.csv with the average of each mean and standard deviation for each activities and each subjects
+  - take the files returned by the cleaning function and merge them
 
