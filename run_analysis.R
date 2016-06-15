@@ -88,6 +88,6 @@ average_data <- function(UCI_dir_path = "UCI HAR Dataset") {
         average_dataset <- mean_std(UCI_dir_path)
         average_dataset <- group_by(average_dataset, activity, subject)
         average_dataset <- summarise_each(average_dataset, funs(mean))
-        write.csv(average_dataset, file = "average_dataset.csv",
-                  col.names = TRUE, row.names = TRUE)
+        write.table(average_dataset, file = "average_dataset.txt",
+                    col.names = TRUE, row.names = FALSE)
 }
