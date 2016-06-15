@@ -1,21 +1,3 @@
-# 1. Merges the training and the test sets to create one data set.
-# 2. Extracts only the measurements on the mean and standard deviation for each
-#    measurement.
-# 3. Uses descriptive activity names to name the activities in the data set
-# 4. Appropriately labels the data set with descriptive variable names.
-# 5. From the data set in step 4, creates a second, independent tidy data set
-#    with the average of each variable for each activity and each subject.
-
-# memento of files
-# train/X_train : result per lines - 7352 obs / 561 variables (worked raw variables)
-# train/y_train : activities per lines, from 1 to 6 - 7352 obs / 1 column
-# train/subject_train : subject per lines, from 1 to 30 - 7352 obs / 1 column
-# activity_labels : as title, 6 obs / 2 columns (nb / name)
-# features.txt : names of variables - 561 obs / 2 columns (nb / name)
-#       mean() : mean value
-#       std() : standard deviation
-
-# data frame -> working with dplyr !!!
 library(dplyr)
 #----------------------------------------------------------------------------
 # function to retrieve text files
@@ -52,7 +34,7 @@ cleaning <- function(path) {
         feature <- gsub("angle", "angle_", feature)
         feature <- gsub("__", "_", feature)
         feature <- make.names(feature, unique = TRUE)
-        
+        #----------------------------------------------------------------------
         activity_labels <- read.table(retrieve_path(path)["activity_labels.txt"],
                                       stringsAsFactors = FALSE, header = FALSE)
         #-----------------------------------------------------------------------
@@ -76,15 +58,15 @@ cleaning <- function(path) {
         test <- c("test/y_test","subject_test", "X_test")
         result_test <- cbind(as.data.frame(result[test]))
         names(result_test) <- c("activity", "subject", feature)
-        
-        total_result <- rbind.data.frame(result_test,result_train, 
+        #----------------------------------------------------------------------
+        total_result <- rbind.data.frame(result_test,result_train,
                                          stringsAsFactors = FALSE)
         #-----------------------------------------------------------------------
         # switching number with names of label in y_train variables
         #-----------------------------------------------------------------------
         for (i in 1:6) {
                 total_result$activity <- gsub(i, activity_labels[i,2],
-                                              total_result$activity)        
+                                              total_result$activity)
         }
         return(total_result)
 }
@@ -94,11 +76,7 @@ cleaning <- function(path) {
 mean_std <- function(UCI_dir_path = "UCI HAR Dataset") {
         # searching names of mean and std
         total_result <- cleaning(UCI_dir_path)
-        # noms <- names(total_result)
-        # noms_mean_std <- noms[grepl("activity|subject|Mean|std",noms)]
-        # extracting only the measurements on the mean and standard deviation
-        # for each measurement
-        result_mean_std <- select(total_result, activity, subject, 
+        result_mean_std <- select(total_result, activity, subject,
                                   contains("Mean"), contains("std"))
         return(result_mean_std)
 }
