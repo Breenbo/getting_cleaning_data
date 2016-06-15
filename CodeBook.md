@@ -44,91 +44,91 @@ Finally, a new dataset is created with the average of each mean and standard dev
 - angle : rad
 
 ### data names
-mean(): Mean value
-std(): Standard deviation
-tBody_Acc_Mean_X
-tBody_Acc_Mean_Y
-tBody_Acc_Mean_Z
-tGravity_Acc_Mean_X
-tGravity_Acc_Mean_Y
-tGravity_Acc_Mean_Z
-tBody_Acc_Jerk_Mean_X
-tBody_Acc_Jerk_Mean_Y
-tBody_Acc_Jerk_Mean_Z
-tBody_Gyro_Mean_X
-tBody_Gyro_Mean_Y
-tBody_Gyro_Mean_Z
-tBody_Gyro_Jerk_Mean_X
-tBody_Gyro_Jerk_Mean_Y
-tBody_Gyro_Jerk_Mean_Z
-tBody_Acc_Mag_Mean
-tGravity_Acc_Mag_Mean
-tBody_Acc_JerkMag_Mean
-tBody_Gyro_Mag_Mean
-tBody_Gyro_JerkMag_Mean
-fBody_Acc_Mean_X
-fBody_Acc_Mean_Y
-fBody_Acc_Mean_Z
-fBody_Acc_MeanFreq_X
-fBody_Acc_MeanFreq_Y
-fBody_Acc_MeanFreq_Z
-fBody_Acc_Jerk_Mean_X
-fBody_Acc_Jerk_Mean_Y
-fBody_Acc_Jerk_Mean_Z
-fBody_Acc_Jerk_MeanFreq_X
-fBody_Acc_Jerk_MeanFreq_Y
-fBody_Acc_Jerk_MeanFreq_Z
-fBody_Gyro_Mean_X
-fBody_Gyro_Mean_Y
-fBody_Gyro_Mean_Z
-fBody_Gyro_MeanFreq_X
-fBody_Gyro_MeanFreq_Y
-fBody_Gyro_MeanFreq_Z
-fBody_Acc_Mag_Mean
-fBody_Acc_Mag_MeanFreq
-fBodyBody_Acc_JerkMag_Mean
-fBodyBody_Acc_JerkMag_MeanFreq
-fBodyBody_Gyro_Mag_Mean
-fBodyBody_Gyro_Mag_MeanFreq
-fBodyBody_Gyro_JerkMag_Mean
-fBodyBody_Gyro_JerkMag_MeanFreq
-angle_tBody_Acc_Mean_gravity
-angle_tBody_Acc_JerkMean_gravityMean
-angle_tBody_Gyro_Mean_gravityMean
-angle_tBody_Gyro_JerkMean_gravityMean
-angle_X_gravityMean
-angle_Y_gravityMean
-angle_Z_gravityMean
-tBody_Acc_std_X
-tBody_Acc_std_Y
-tBody_Acc_std_Z
-tGravity_Acc_std_X
-tGravity_Acc_std_Y
-tGravity_Acc_std_Z
-tBody_Acc_Jerk_std_X
-tBody_Acc_Jerk_std_Y
-tBody_Acc_Jerk_std_Z
-tBody_Gyro_std_X
-tBody_Gyro_std_Y
-tBody_Gyro_std_Z
-tBody_Gyro_Jerk_std_X
-tBody_Gyro_Jerk_std_Y
-tBody_Gyro_Jerk_std_Z
-tBody_Acc_Mag_std
-tGravity_Acc_Mag_std
-tBody_Acc_JerkMag_std
-tBody_Gyro_Mag_std
-tBody_Gyro_JerkMag_std
-fBody_Acc_std_X
-fBody_Acc_std_Y
-fBody_Acc_std_Z
-fBody_Acc_Jerk_std_X
-fBody_Acc_Jerk_std_Y
-fBody_Acc_Jerk_std_Z
-fBody_Gyro_std_X
-fBody_Gyro_std_Y
-fBody_Gyro_std_Z
-fBody_Acc_Mag_std
-fBodyBody_Acc_JerkMag_std
-fBodyBody_Gyro_Mag_std
-fBodyBody_Gyro_JerkMag_std
+- mean(): Mean value
+- std(): Standard deviation
+- tBody_Acc_Mean_X
+- tBody_Acc_Mean_Y
+- tBody_Acc_Mean_Z
+- tGravity_Acc_Mean_X
+- tGravity_Acc_Mean_Y
+- tGravity_Acc_Mean_Z
+- tBody_Acc_Jerk_Mean_X
+- tBody_Acc_Jerk_Mean_Y
+- tBody_Acc_Jerk_Mean_Z
+- tBody_Gyro_Mean_X
+- tBody_Gyro_Mean_Y
+- tBody_Gyro_Mean_Z
+- tBody_Gyro_Jerk_Mean_X
+- tBody_Gyro_Jerk_Mean_Y
+- tBody_Gyro_Jerk_Mean_Z
+- tBody_Acc_Mag_Mean
+- tGravity_Acc_Mag_Mean
+- tBody_Acc_JerkMag_Mean
+- tBody_Gyro_Mag_Mean
+- tBody_Gyro_JerkMag_Mean
+- fBody_Acc_Mean_X
+- fBody_Acc_Mean_Y
+- fBody_Acc_Mean_Z
+- fBody_Acc_MeanFreq_X
+- fBody_Acc_MeanFreq_Y
+- fBody_Acc_MeanFreq_Z
+- fBody_Acc_Jerk_Mean_X
+- fBody_Acc_Jerk_Mean_Y
+- fBody_Acc_Jerk_Mean_Z
+- fBody_Acc_Jerk_MeanFreq_X
+- fBody_Acc_Jerk_MeanFreq_Y
+- fBody_Acc_Jerk_MeanFreq_Z
+- fBody_Gyro_Mean_X
+- fBody_Gyro_Mean_Y
+- fBody_Gyro_Mean_Z
+- fBody_Gyro_MeanFreq_X
+- fBody_Gyro_MeanFreq_Y
+- fBody_Gyro_MeanFreq_Z
+- fBody_Acc_Mag_Mean
+- fBody_Acc_Mag_MeanFreq
+- fBodyBody_Acc_JerkMag_Mean
+- fBodyBody_Acc_JerkMag_MeanFreq
+- fBodyBody_Gyro_Mag_Mean
+- fBodyBody_Gyro_Mag_MeanFreq
+- fBodyBody_Gyro_JerkMag_Mean
+- fBodyBody_Gyro_JerkMag_MeanFreq
+- angle_tBody_Acc_Mean_gravity
+- angle_tBody_Acc_JerkMean_gravityMean
+- angle_tBody_Gyro_Mean_gravityMean
+- angle_tBody_Gyro_JerkMean_gravityMean
+- angle_X_gravityMean
+- angle_Y_gravityMean
+- angle_Z_gravityMean
+- tBody_Acc_std_X
+- tBody_Acc_std_Y
+- tBody_Acc_std_Z
+- tGravity_Acc_std_X
+- tGravity_Acc_std_Y
+- tGravity_Acc_std_Z
+- tBody_Acc_Jerk_std_X
+- tBody_Acc_Jerk_std_Y
+- tBody_Acc_Jerk_std_Z
+- tBody_Gyro_std_X
+- tBody_Gyro_std_Y
+- tBody_Gyro_std_Z
+- tBody_Gyro_Jerk_std_X
+- tBody_Gyro_Jerk_std_Y
+- tBody_Gyro_Jerk_std_Z
+- tBody_Acc_Mag_std
+- tGravity_Acc_Mag_std
+- tBody_Acc_JerkMag_std
+- tBody_Gyro_Mag_std
+- tBody_Gyro_JerkMag_std
+- fBody_Acc_std_X
+- fBody_Acc_std_Y
+- fBody_Acc_std_Z
+- fBody_Acc_Jerk_std_X
+- fBody_Acc_Jerk_std_Y
+- fBody_Acc_Jerk_std_Z
+- fBody_Gyro_std_X
+- fBody_Gyro_std_Y
+- fBody_Gyro_std_Z
+- fBody_Acc_Mag_std
+- fBodyBody_Acc_JerkMag_std
+- fBodyBody_Gyro_Mag_std
+- fBodyBody_Gyro_JerkMag_std
