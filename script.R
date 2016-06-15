@@ -21,90 +21,85 @@ library(dplyr)
 # function to retrieve text files
 #----------------------------------------------------------------------------
 retrieve_path <- function(path) {
-        dir_feature <- paste(path, "features.txt", sep = "/")
-        dir_activity_label <- paste(path, "activity_labels.txt", sep = "/")
-        x <- c("train", "test")
-        dir_app <- lapply(x, function(x) {
-                dir_y <- paste(path,"/", x,"/", "y_",x,".txt", sep="")
-                dir_subject <- paste(path,"/", x,"/", "subject_",x,".txt",
-                                     sep="")
-                dir_result <- paste(path,"/", x,"/", "X_",x,".txt", sep="")
-                dir_app <- c(subject = dir_subject, y = dir_y,
-                             result = dir_result)
+        files_names <- list.files(path, recursive = TRUE, full.names = TRUE)
+        x <- c("features.txt","activity_labels.txt","train/y_train",
+               "test/y_test", "subject_train", "subject_test", "X_train",
+               "X_test")
+        dir_path <- sapply(x, function(x){
+                files_names[grep(x, files_names)]
         })
-        dir_path <- c(activity = dir_activity_label,feature = dir_feature,
-                      train = dir_app[1], test = dir_app[2])
         return(dir_path)
 }
 #----------------------------------------------------------------------------
 # cleaning and merging the datasets, and labelling them, for train and test
 #----------------------------------------------------------------------------
-cleaning <- function(path, theme) {
+cleaning <- function(path) {
         #-----------------------------------------------------------------------
-        # read and save names in variable "feature"
+        # read, clean and save names in variable "feature"
         #----------------------------------------------------------------------
-        feature <- read.table(retrieve_path(path)$feature,
+        feature <- read.table(retrieve_path(path)["features.txt"],
                               stringsAsFactors = FALSE, header = FALSE,
                               colClasses = "character")
-        activity_labels <- read.table(retrieve_path(path)$activity,
+        feature <- feature[,2]
+        #-----------------------------------------------------------------------
+        # cleaning the names of columns and made them valid/unique
+        #----------------------------------------------------------------------
+        feature <- gsub("[-,]","_", feature)
+        feature <- gsub("[()]","", feature)
+        feature <- gsub("mean", "Mean", feature)
+        feature <- gsub("Acc", "_Acc_", feature)
+        feature <- gsub("Gyro", "_Gyro_", feature)
+        feature <- gsub("angle", "angle_", feature)
+        feature <- gsub("__", "_", feature)
+        feature <- make.names(feature, unique = TRUE)
+        
+        activity_labels <- read.table(retrieve_path(path)["activity_labels.txt"],
                                       stringsAsFactors = FALSE, header = FALSE)
         #-----------------------------------------------------------------------
-        # reading, setting names of columns and saving result datas
-        #----------------------------------------------------------------------
-        result_theme <- read.table(retrieve_path(path)[[theme]][["result"]],
-                                  col.names = feature[,2],
-                                  stringsAsFactors = FALSE,
-                                  header = FALSE,
-                                  colClasses = "numeric") #improve read.table
-        names(result_theme) <- gsub("\\.", "", names(result_theme))
-        names(result_theme) <- gsub("[Mm]ean", "MEAN", names(result_theme))
-        names(result_theme) <- gsub("std", "STD", names(result_theme))
-        return(result_theme)
+        # reading files and saving result datas in list of dataframes
+        #-----------------------------------------------------------------------
+        theme_name <- c("train/y_train","test/y_test","subject_train",
+                        "subject_test","X_train","X_test")
+        result <- lapply(theme_name, function(x) {
+                        read.table(retrieve_path(path)[x],
+                        stringsAsFactors = FALSE,
+                        header = FALSE,
+                        colClasses = "numeric") #improve read.table
+               })
+        names(result) <- theme_name
+        #-----------------------------------------------------------------------
+        # ordering and merging datas in one dataframe
+        #-----------------------------------------------------------------------
+        train <- c("train/y_train","subject_train","X_train")
+        result_train <- cbind(as.data.frame(result[train]))
+        names(result_train) <- c("activity", "subject", feature)
+        test <- c("test/y_test","subject_test", "X_test")
+        result_test <- cbind(as.data.frame(result[test]))
+        names(result_test) <- c("activity", "subject", feature)
+        
+        total_result <- rbind.data.frame(result_test,result_train, 
+                                         stringsAsFactors = FALSE)
         #-----------------------------------------------------------------------
         # switching number with names of label in y_train variables
-        #----------------------------------------------------------------------
-        y_theme <- read.table(retrieve_path(path)[[theme]][["y"]],
-                              stringsAsFactors = FALSE, header = FALSE,
-                              colClasses = "numeric")
-        y_theme <- as.data.frame(apply(y_theme, 2,
-                                       function(i) activity_labels[i,2]))
-        names(y_theme) <- "activity"
         #-----------------------------------------------------------------------
-        # reading subject number and title
-        #-----------------------------------------------------------------------
-        subject_theme <- read.table(retrieve_path(path)[[theme]][["subject"]],
-                                    stringsAsFactors = FALSE, header = FALSE,
-                                    colClasses = "numeric")
-        names(subject_theme) <- "subject"
-        if (theme == "train") {
-                y_train <- y_theme
-                subject_train <- subject_theme
-                result_train <- result_theme
-                resultTrain <- cbind(y_train, subject_train, result_train)
-                return(resultTrain)
+        for (i in 1:6) {
+                total_result$activity <- gsub(i, activity_labels[i,2],
+                                              total_result$activity)        
         }
-        if (theme == "test") {
-                y_test <- y_theme
-                subject_test <- subject_theme
-                result_test <- result_theme
-                resultTest <- cbind(y_test, subject_test, result_test)
-                return(resultTest)
-        }
+        return(total_result)
 }
-#----------------------------------------------------------------------------
-# merging datasets to have tidy one, then extract only mean and std columns
-#----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+# using tidy one dataset, and extract only mean and std columns
+#-------------------------------------------------------------------------------
 mean_std <- function(UCI_dir_path = "UCI HAR Dataset") {
-        # merge all values in one tidy dataset
-        result <- rbind.data.frame(cleaning(UCI_dir_path,"test"),
-                                   cleaning(UCI_dir_path, "train"),
-                                   stringsAsFactors = FALSE)
         # searching names of mean and std
-        noms <- names(result)
-        noms_mean_std <- noms[grepl("activity|subject|MEAN|STD",noms)]
+        total_result <- cleaning(UCI_dir_path)
+        # noms <- names(total_result)
+        # noms_mean_std <- noms[grepl("activity|subject|Mean|std",noms)]
         # extracting only the measurements on the mean and standard deviation
         # for each measurement
-        result_mean_std <- select(result, one_of(noms_mean_std))
+        result_mean_std <- select(total_result, activity, subject, 
+                                  contains("Mean"), contains("std"))
         return(result_mean_std)
 }
 #----------------------------------------------------------------------------

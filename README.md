@@ -10,17 +10,16 @@
 
 
 ## Functions explanation
-The script contains four functions(arguments) :
+The script, which uses the dplyr package, contains four functions(arguments) :
 - *retrieve_path(UCI_dir_path)* :
   - reconstruct the path to files from the directory path of "UCI HAR Dataset" entered by user.
   - Work only if the files names aren't changed !
-- *cleaning(UCI_dir_path, theme)* :
+- *cleaning(UCI_dir_path)* :
   - clean the files "train" and "test" and add columns names, rows with subjects and activities
-  - theme can be "test" or "train"
-  - return one clean dataset for train values and one dataset for test values
+  - return a clean dataset with train and test values, subject number and names of activities
 - *mean_std(UCI_dir_path)* :
   - extract only the measurements on the mean and standard deviation for each measurements,
-  - take the files returned by the *cleaning* function and merge them in a unique dataset.
+  - take the file returned by the *cleaning* function
 - *average_data(UCI_dir_path)* :
   - create a file.csv with the average of each mean and standard deviation for each activities and each subjects
   - take the file returned by the *mean_std* function
