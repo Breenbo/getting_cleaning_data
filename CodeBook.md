@@ -42,6 +42,7 @@ Finally, a new dataset is created with the average of each mean and standard dev
 - Acc(3-axial linear acceleration) : g
 - Gyro(3-axial angular velocity) : rad/s
 - angle : rad
+
 ### data names
 mean(): Mean value
 std(): Standard deviation
